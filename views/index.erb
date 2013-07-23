@@ -1,0 +1,46 @@
+<!-- 
+  1. I have chosen default RSS feed display just to show full potential of application
+	2. Checks if entered URL is valid or not and in case of invalid URL displays last valid RSS feed
+	3. Doesn't check if entered URL is RSS feed or not
+	4. Works even if RSS feed returns less than 10 results
+	5. To show full article, I am using description tag from RSS feed but it might not have entire content in RSS feed (example tumblr feed), but in many cases it have full content. Reason for not loading content from original link is Same origin policy
+-->
+
+<div class="row">
+  <div class="span12">
+    <form method="POST" action="" class=" form-inline">
+    	<!-- <lable>RSS Source</label> -->
+  	  <input type="text" name="rss_source" id="rss_source" class="input-xxlarge" placeholder="Enter RSS Source" />
+  	  <input type="submit" name="Submit RSS Source" class="btn btn-primary"/>
+  	</form>
+  </div>
+</div>
+
+
+<h2> Last 10 entries in RSS FEED</h2>
+<div class="alert alert-info"><%= @feed %></div>
+<div class="row">
+  <div class="span12">
+    <table class="table table-hover">
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Published at</th>
+        <th>Preview</th>
+        <th>Link to original</th>
+        <th>Read full article</th>
+      </tr>
+      <% @reads.last(10).each do |read| %>
+      <tr>
+      	<td> <%= read[:title] %></td>
+      	<td> <%= read[:author] %></td>
+      	<td> <%= read[:pubDate] %></td>
+      	<td> <%= read[:description].gsub(/<\/?[^>]*>/, "").truncate(50, :separator => ' ') %></td>
+        <td> <a href="<%= read[:link] %>"><%= read[:title] %></td>
+        <td> <a href="<%= read[:link]%>" role="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal_<%= read[:id] %>">Read Full Article</a></td>
+        <%= erb :overlay, :layout => false, :locals => { :read => read } %>
+      <tr>
+      <% end %>
+    </table>
+  </div>
+</div>  
